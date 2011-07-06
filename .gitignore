@@ -1,0 +1,11 @@
+.#
+pom.xml
+.cake
+*jar
+lib
+logs/
+classes
+docs
+autodoc
+.#*
+*#*
