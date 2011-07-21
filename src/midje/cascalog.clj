@@ -36,14 +36,15 @@
   (build-fact?- '(\"string\" [[1]] (<- [[?a]] ([[1]] ?a))) `fact)
    ;=> (fact <results-of-query> => (just [[1]] :in-any-order)"
   [bindings factor]
-  (let [[ll & more :as bindings] (remove string? bindings)
+  (let [[ll & more] bindings
         [ll bindings] (if (keyword? ll)
                         [ll more]
                         [nil bindings])]
     `(~factor
       ~@(loop [[x y & more :as forms] bindings, res []]
           (cond (not x) res
-                (midje-form? x) (recur (rest forms) (conj (vec res) x))
+                (or (string? x)
+                    (midje-form? x)) (recur (rest forms) (conj (vec res) x))
                 :else (->> (fact-line x y ll)
                            (concat res)
                            (recur more)))))))
