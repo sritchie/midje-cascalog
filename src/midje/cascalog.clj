@@ -55,7 +55,7 @@
       ~@(loop [[x y & more :as forms] bindings, res []]
           (cond (not x) res
                 (or (string? x)
-                    (midje-form? x)) (recur (rest forms) (conj (vec res) x))
+                    (mocking-form? x)) (recur (rest forms) (conj (vec res) x))
                 :else (->> (fact-line x y ll)
                            (concat res)
                            (recur more)))))))
