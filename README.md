@@ -11,7 +11,9 @@ To use midje-cascalog in your own project, add the following two entries to `:de
     [lein-midje "1.0.3"]
     [midje-cascalog "0.2.1"]
 
-`lein run` at the command line will run all Midje tests and generate a summary.
+Add `(:use [midje sweet cascalog])` to your testing namespace to get started.
+
+When you're all finished writing tests, `lein run` at the command line will run all Midje tests and generate a summary.
 
 ## Example Query Test
 
