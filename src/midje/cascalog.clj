@@ -3,7 +3,7 @@
         [cascalog.testing :only (process?-)]))
 
 (def mocking-forms #{'against-background 'provided})
-(def checker-forms #{'contains 'just 'has-prefix 'has-suffix 'has})
+(def checker-forms #{'contains 'just 'has-prefix 'has-suffix})
 
 (defn clause-from-set? [set x]
   (when (coll? x)
