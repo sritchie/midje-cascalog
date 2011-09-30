@@ -33,7 +33,7 @@ Let's say you want to test a Cascalog workflow that examines your user datastore
   * sorts tuples from `src` in reverse order by follower count, and
   * returns a single 2-tuple with the name and follower-count of our most popular user.
 
-At a high level, the subquery returned by =max-followers-query= is responsible for a single piece of application logic:
+At a high level, the subquery returned by `max-followers-query` is responsible for a single piece of application logic:
 
 * extracting the tuple with max `?follower-count` from the tuples returned by `(complex-subquery datastore-path)`.
 
@@ -68,6 +68,6 @@ Facts make statements about queries. The fact passes if these statements are tru
 
 Fact-based testing separates application logic from the way data is stored. By mocking out `complex-subquery`, our fact tests `max-followers-query` in isolation and proves it correct for all expected inputs.
 
-This approach is not just better than the "state of the art" of MapReduce testing, [as defined by Cloudera](http://www.cloudera.com/blog/2009/07/debugging-mapreduce-programs-with-mrunit/); it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
+This approach is not just better than the "state of the art" of MapReduce testing [as defined by Cloudera](http://www.cloudera.com/blog/2009/07/debugging-mapreduce-programs-with-mrunit/); it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
 
 Fact-based tests are the building blocks of rock-solid production workflows.
