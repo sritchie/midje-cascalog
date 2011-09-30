@@ -66,8 +66,8 @@ Facts make statements about queries. The fact passes if these statements are tru
 * it will produce `[[ richhickey" 2961]]`,
 * provided `(complex-subquery :path)` produces `[["sritchie09" 180] ["richhickey" 2961]]`.
 
-Fact-based testing separates application logic from the way data is stored. By mocking out =complex-subquery=, our fact tests =max-followers-query= in isolation and proves it correct for all expected inputs.
+Fact-based testing separates application logic from the way data is stored. By mocking out `complex-subquery`, our fact tests `max-followers-query` in isolation and proves it correct for all expected inputs.
 
-This approach is not just better than the "state of the art" of MapReduce testing, as defined by Cloudera; it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
+This approach is not just better than the "state of the art" of MapReduce testing, [as defined by Cloudera](http://www.cloudera.com/blog/2009/07/debugging-mapreduce-programs-with-mrunit/); it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
 
 Fact-based tests are the building blocks of rock-solid production workflows.
