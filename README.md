@@ -13,7 +13,7 @@ To use midje-cascalog in your own project, add the following two entries to `:de
 
 `lein run` at the command line will run all Midje tests and generate a summary.
 
-## Example Query and Test
+## Example Query Test
 
 Let's say you want to test a Cascalog workflow that examines your user datastore and returns the user with the greatest number of followers. Your workflow's top level query will generate a single tuple containing that user's name and follower-count. Here's the code:
 
