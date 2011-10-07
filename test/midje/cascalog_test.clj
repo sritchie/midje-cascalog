@@ -69,3 +69,13 @@
          [?a]
          ((whoop) ?a)
          (provided (whoop) => [[10]]))
+
+(fact?<- "the provided and background clauses work at the end of
+          fact?<- as well."
+         [[10 11]]
+         [?a ?b]
+         ((whoop) ?a ?b)
+         ((bang) ?b :> true)
+         (against-background
+           (whoop) => [[10 11] [12 13]]
+           (bang) => [[11]]))

@@ -1,10 +1,8 @@
 ## Midje-Cascalog
 
-Midje-Cascalog is a thin layer over [midje](https://github.com/marick/Midje) that makes it easy and fun to test [Cascalog](https://github.com/nathanmarz/cascalog) queries. See below for an example:
+Midje-Cascalog is a thin layer over [midje](https://github.com/marick/Midje) that makes it easy and fun to test [Cascalog](https://github.com/nathanmarz/cascalog) queries! Scroll down for an in-depth example.
 
-See [Testing Cascalog with Midje](http://sritchie.github.com/2011/09/30/testing-cascalog-with-midje.html) for a long discussion on various midje-cascalog idioms.
-
-The [cascalog-testing-demo](https://github.com/sritchie/cascalog-testing-demo) project contains all code found in the blog post.
+[Testing Cascalog with Midje](http://sritchie.github.com/2011/09/30/testing-cascalog-with-midje.html) gives a long discussion on various midje-cascalog idioms.
 
 ## Usage Instructions
 
@@ -13,9 +11,11 @@ To use midje-cascalog in your own project, add the following two entries to `:de
     [lein-midje "1.0.3"]
     [midje-cascalog "0.2.1"]
 
-`lein run` at the command line will run all Midje tests and generate a summary.
+Add `(:use [midje sweet cascalog])` to your testing namespace to get started.
 
-## Example Query and Test
+When you're all finished writing tests, `lein run` at the command line will run all Midje tests and generate a summary.
+
+## Example Query Test
 
 Let's say you want to test a Cascalog workflow that examines your user datastore and returns the user with the greatest number of followers. Your workflow's top level query will generate a single tuple containing that user's name and follower-count. Here's the code:
 
@@ -33,7 +33,7 @@ Let's say you want to test a Cascalog workflow that examines your user datastore
   * sorts tuples from `src` in reverse order by follower count, and
   * returns a single 2-tuple with the name and follower-count of our most popular user.
 
-At a high level, the subquery returned by `max-followers-query` is responsible for a single piece of application logic:
+At a high level, the subquery returned by =max-followers-query= is responsible for a single piece of application logic:
 
 * extracting the tuple with max `?follower-count` from the tuples returned by `(complex-subquery datastore-path)`.
 
@@ -68,6 +68,6 @@ Facts make statements about queries. The fact passes if these statements are tru
 
 Fact-based testing separates application logic from the way data is stored. By mocking out `complex-subquery`, our fact tests `max-followers-query` in isolation and proves it correct for all expected inputs.
 
-This approach is not just better than the "state of the art" of MapReduce testing [as defined by Cloudera](http://www.cloudera.com/blog/2009/07/debugging-mapreduce-programs-with-mrunit/); it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
+This approach is not just better than the "state of the art" of MapReduce testing, [as defined by Cloudera](http://www.cloudera.com/blog/2009/07/debugging-mapreduce-programs-with-mrunit/); it completely obliterates the old way of thinking, and makes it possible to build very complex workflows with a minimum of uncertainty.
 
 Fact-based tests are the building blocks of rock-solid production workflows.
