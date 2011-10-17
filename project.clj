@@ -4,5 +4,5 @@
                  [cascalog "1.8.2"]
                  [midje "1.3-alpha4"]]
   :dev-dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
-                     [lein-midje "1.0.3"]
+                     [lein-midje "1.0.4"]
                      [swank-clojure "1.4.0-SNAPSHOT"]])
