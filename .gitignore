@@ -10,3 +10,4 @@ autodoc
 .#*
 *#*
 .lein-failures
+.DS_Store
