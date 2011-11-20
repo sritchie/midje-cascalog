@@ -11,3 +11,4 @@ autodoc
 *#*
 .lein-failures
 .DS_Store
+.lein-deps-sum
