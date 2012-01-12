@@ -1,8 +1,13 @@
-(defproject midje-cascalog "0.3.0"
+(defproject midje-cascalog "0.3.1"
   :description "Cascalog functions for Midje."
   :dependencies [[org.clojure/clojure "1.3.0"]
-                 [cascalog "1.8.2"]
-                 [midje "1.3-alpha4"]]
+                 [midje "1.3.0"]]
   :dev-dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
-                     [lein-midje "1.0.4"]
-                     [swank-clojure "1.4.0-SNAPSHOT"]])
+                     [cascalog "1.8.5"]
+                     [lein-multi "1.1.0-SNAPSHOT"]]
+  :multi-deps {"1.8" [[org.clojure/clojure "1.3.0"]
+                      [cascalog "1.8.5"]
+                      [midje "1.3.0"]]
+               "1.9" [[org.clojure/clojure "1.3.0"]
+                      [cascalog "1.9.0-wip"]
+                      [midje "1.3.0"]]})
