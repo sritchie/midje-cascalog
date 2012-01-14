@@ -1,6 +1,7 @@
 (ns midje.cascalog
   (:use midje.sweet
-        [cascalog.testing :only (process?-)]))
+        [cascalog.testing :only (process?-)]
+        [cascalog.io :only (log-levels)]))
 
 (def mocking-forms #{'against-background 'provided})
 (def checker-forms #{'contains 'just 'has-prefix 'has-suffix})
@@ -38,6 +39,15 @@
                            [result (list `just result :in-any-order)])]
     `((~process ~@(when ll [ll]) ~result ~query) => ~checker)))
 
+(defn process-bindings
+  "Accepts a set of fact bindings and returns a 2-tuple of log level &
+  remaining bindings. (The log level is an optional first argument,
+  and must be a keyword.)"
+  [[ll & more :as bindings]]
+  (if (contains? log-levels ll)
+    [ll more]
+    [nil bindings]))
+
 (defn- build-fact?-
   "Accepts a sequence of fact?- bindings and a midje \"factor\" --
   `fact`, or `future-fact`, for example -- and returns a syntax-quoted
@@ -47,10 +57,7 @@
   (build-fact?- '(\"string\" [[1]] (<- [[?a]] ([[1]] ?a))) `fact)
    ;=> (fact <results-of-query> => (just [[1]] :in-any-order)"
   [bindings factor]
-  (let [[ll & more] bindings
-        [ll bindings] (if (keyword? ll)
-                        [ll more]
-                        [nil bindings])]
+  (let [[ll bindings] (process-bindings bindings)]
     `(~factor
       ~@(loop [[x y & more :as forms] bindings, res []]
           (cond (not x) res
@@ -80,3 +87,52 @@
 
 (defmacro pending-fact?- [& bindings] (build-fact?- bindings `pending-fact))
 (defmacro pending-fact?<- [& args] (build-fact?<- args `pending-fact?-))
+
+;; ## Produces and Friends
+;;
+;; The following functions attempt to create a more natural set of
+;;midje checkers that allow the user to write facts like this:
+;;
+;; (fact "memory sources should produce themselves."
+;;   (memory-source-tap [[1]]) => (produces [[1]]))
+;;
+;; The work here isn't complete; I'll wait for a bit more input before
+;; I proceed.
+
+(defn mk-checker
+  "Returns a tuple collection checker for the supplied set of expected
+  tuples, tuned with the provided sequence of arguments."
+  [expected opts]
+  (just expected :in-any-order))
+
+(defn execute
+  "Accepts a subquery and a sequence of result tuples and returns the
+  tuple sequence that results from executing the supplied
+  subquery. Optionally, `execute` takes a sequence of arguments;
+  currently only a keyword argument in the first position for
+  log-level is supported."
+  [tuples query opts]
+  (let [process (comp first second process?-)
+        [ll _] (process-bindings opts)]
+    (if ll
+      (process ll tuples query)
+      (process tuples query))))
+
+(defn produces
+  "Returns a checker that expects to be used against a
+  subquery:
+
+   (fact <subquery> => (produces <result-seq>))
+
+   For example:
+
+   (fact (some-subquery [[1]]) => (produces [[2]]))
+
+   `produces` currently only checks that the exact result tuple-set
+   was produced in any order. `produces` takes an optional set of
+   keyword arguments after the result vector. Currently only
+   log-levels are supported."
+  [expected & opts]
+  (chatty-checker
+   [actual]
+   ((mk-checker expected opts) (execute expected actual opts))))

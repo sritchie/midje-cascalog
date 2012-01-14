@@ -28,7 +28,7 @@
  (fact?- ?res (apply ?func ?args))
  ?res    ?func    ?args
  [[3 5]] my-query [3 3 5]
- [[1]]   a-query  [[[1]]])
+ [[1]]   a-query  [[1]])
 
 (let [some-seq [[10]]]
   (fact?<- some-seq
@@ -39,7 +39,7 @@
 (let [result-seq [[3 5]]]
   "Showing that we can draw from the background."
   (fact?- result-seq (my-query .a. .a. .b.)
-          [[3 10]] (my-query .a. .a. .c.)
+          [[3 10]]   (my-query .a. .a. .c.)
           (against-background
             (whoop .a.) => [[3]]
             (bang .a. .b.) => [[3 5]]
@@ -78,4 +78,17 @@
          ((bang) ?b :> true)
          (against-background
            (whoop) => [[10 11] [12 13]]
-           (bang) => [[11]]))
+           (bang)  => [[11]]))
+
+;; ## Standard Checker Tests
+
+(fact
+  "The produces checker allows for more midje-like syntax in cascalog
+   tests."
+  (a-query [[10]]) => (produces [[10]])
+  (<- [?a ?b]
+      ((whoop) ?a ?b)
+      ((bang) ?b :> true)) => (produces [[10 11]])    
+  (against-background
+    (whoop) => [[10 11] [12 13]]
+    (bang)  => [[11]]))
