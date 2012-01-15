@@ -140,6 +140,7 @@
 
     "`produce-prefix` mimics the `has-prefix` collection checker."
     query => (produces-prefix [[1 5]])
+    query => (produces-prefix [[1 5] [3 10]])
 
     "`produce-suffix` mimics the `has-suffix` collection checker."
     query => (produces-suffix [[5 11]])))

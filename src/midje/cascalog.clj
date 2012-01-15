@@ -164,7 +164,7 @@
                       log-level-set
                       (set permitted-opts))))
 
-(defn- mk-checker
+(defn mk-checker
   "Accepts two arguments:
 
   `checker-fn`: a midje collection checker (just or contains, for
