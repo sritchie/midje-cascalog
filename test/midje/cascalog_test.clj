@@ -4,7 +4,8 @@
         midje.cascalog)
   (:require [cascalog.ops :as c]))
 
-;; Tests for cascalog midje stuff.
+;; ## Testing Battery
+
 (defn whoop [x] [[x]])
 (defn bang [x y] [[x y]])
 
