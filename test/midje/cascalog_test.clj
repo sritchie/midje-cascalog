@@ -1,9 +1,11 @@
 (ns midje.cascalog-test
   (:use midje.sweet
         cascalog.api
-        midje.cascalog))
+        midje.cascalog)
+  (:require [cascalog.ops :as c]))
 
-;; Tests for cascalog midje stuff.
+;; ## Testing Battery
+
 (defn whoop [x] [[x]])
 (defn bang [x y] [[x y]])
 
@@ -28,9 +30,10 @@
  (fact?- ?res (apply ?func ?args))
  ?res    ?func    ?args
  [[3 5]] my-query [3 3 5]
- [[1]]   a-query  [[[1]]])
+ [[1]]   a-query  [[1]])
 
 (let [some-seq [[10]]]
+  "Use fact?<- to tests and define a function at the same time."
   (fact?<- some-seq
            [?a]
            ((whoop :a) ?a)
@@ -39,7 +42,7 @@
 (let [result-seq [[3 5]]]
   "Showing that we can draw from the background."
   (fact?- result-seq (my-query .a. .a. .b.)
-          [[3 10]] (my-query .a. .a. .c.)
+          [[3 10]]   (my-query .a. .a. .c.)
           (against-background
             (whoop .a.) => [[3]]
             (bang .a. .b.) => [[3 5]]
@@ -78,4 +81,75 @@
          ((bang) ?b :> true)
          (against-background
            (whoop) => [[10 11] [12 13]]
-           (bang) => [[11]]))
+           (bang)  => [[11]]))
+
+;; ## Standard Checker Tests
+
+(fact
+  "The produces checker allows for more midje-like syntax in cascalog
+   tests."
+  (a-query [[10]]) => (produces [[10]])
+  (<- [?a ?b]
+      ((whoop) ?a ?b)
+      ((bang) ?b :> true)) => (produces [[10 11]])    
+  (against-background
+    (whoop) => [[10 11] [12 13]]
+    (bang)  => [[11]]))
+
+(let [some-seq [[10]]]
+  (fact
+    "use `produces` to check that the supplied query, when executed,
+    produces exactly the supplied set of tuples -- no more, no less --
+    in any order."
+    (<- [?a] ((whoop :a) ?a)) => (produces some-seq)
+    (provided (whoop :a) => [[10]])))
+
+(let [src   [[1 2] [1 3]
+             [3 4] [3 6]
+             [5 2] [5 9]]
+      query (<- [?x ?sum]
+                (src ?x ?y)
+                (:sort ?x)
+                (c/sum ?y :> ?sum))]
+  (facts
+    "Executing the query produces proper sums in either order."
+    query => (produces [[3 10] [1 5] [5 11]])
+    query => (produces [[1 5] [3 10] [5 11]])
+
+    "the `:in-order` keyword makes ordering important, helpful in
+    cases where output is sorted."
+    query =not=> (produces [[3 10] [5 11] [1 5]] :in-order)
+    query => (produces [[1 5] [3 10] [5 11]] :in-order)
+
+    "`produces-some` allows for checking against a subset of tuples"
+    query => (produces-some [[5 11] [1 5]])
+
+    "`:in-order` makes ordering important, but gaps are all right."
+    query =not=> (produces-some [[5 11] [1 5]] :in-order)
+    query => (produces-some [[1 5] [5 11]] :in-order)
+
+    "Adding `:no-gaps` causes gapped tuples to fail."
+    
+    query =not=> (produces-some [[1 5] [5 11]] :in-order :no-gaps)
+    query => (produces-some [[1 5] [3 10]] :in-order :no-gaps)
+
+    "`produce-prefix` mimics the `has-prefix` collection checker."
+    query => (produces-prefix [[1 5]])
+
+    "`produce-suffix` mimics the `has-suffix` collection checker."
+    query => (produces-suffix [[5 11]])))
+
+;; This syntax makes it possible to wrap tests in an external
+;; `against-background` form, like so:
+
+(against-background [(whoop :a) => [[1] [2] [3]]]
+  (letfn [(mk-query [src]
+            (<- [?a] (src ?a)))]
+    (fact
+      "the background above applies to each fact."
+      (mk-query (whoop :a)) => (produces [[1] [2] [3]])
+
+      "Internal calls to provide will override the background."
+      (mk-query (whoop :a)) => (produces [["STRING!"]])
+      (provided
+        (whoop :a) => [["STRING!"]]))))
