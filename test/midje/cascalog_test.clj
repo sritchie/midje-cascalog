@@ -134,8 +134,7 @@
     query =not=> (produces-some [[5 11] [1 5]] :in-order)
     query => (produces-some [[1 5] [5 11]] :in-order)
 
-    "Adding `:no-gaps` causes gapped tuples to fail."
-    
+    "Adding `:no-gaps` causes gapped tuples to fail."    
     query =not=> (produces-some [[1 5] [5 11]] :in-order :no-gaps)
     query => (produces-some [[1 5] [3 10]] :in-order :no-gaps)
 
