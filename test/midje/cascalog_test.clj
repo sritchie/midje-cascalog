@@ -104,6 +104,12 @@
     (<- [?a] ((whoop :a) ?a)) => (produces some-seq)
     (provided (whoop :a) => [[10]])))
 
+;; The following facts demonstrate the power of midje-cascalog's
+;; chatty checkers. Note that each of the forms (`produces`,
+;; `produces-some`, `produces-prefix` and `produces-suffix`) can be
+;; provided with a log-level keyword as their first argument after the
+;; sequence of result tuples.
+
 (let [src   [[1 2] [1 3]
              [3 4] [3 6]
              [5 2] [5 9]]
