@@ -1,4 +1,4 @@
-(defproject midje-cascalog "0.3.2-SNAPSHOT"
+(defproject midje-cascalog "0.3.2"
   :description "Cascalog functions for Midje."
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [midje "1.3.0"]]
