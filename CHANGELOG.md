@@ -1,6 +1,13 @@
 ## 1.3.2
 
-* Added `produces` chatty checker to allow for more dynamic midje fact generation.
+* Added custom chatty checker to allow for more dynamic midje fact generation.
+
+- produces (supports :in-order keyword option)
+- produces-some (supports :in-order, :no-gaps)
+- produces-prefix
+- produces-suffix
+
+(Each form can take a log-level keyword as its first argument.)
 
 ## 1.3.1
 
