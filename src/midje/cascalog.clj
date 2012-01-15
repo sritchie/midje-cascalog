@@ -164,7 +164,7 @@
                       log-level-set
                       (set permitted-opts))))
 
-(defn mk-checker
+(defn wrap-checker
   "Accepts two arguments:
 
   `checker-fn`: a midje collection checker (just or contains, for
@@ -196,18 +196,18 @@
 ;; collection checkers.
 
 (def produces
-  (mk-checker just
-              {#{:in-order} #{}
-               #{}          #{:in-any-order}}))
+  (wrap-checker just
+                {#{:in-order} #{}
+                 #{}          #{:in-any-order}}))
 
 (def produces-some
-  (mk-checker contains
-              {#{:in-order :no-gaps} #{}
-               #{:in-order}          #{:gaps-ok}
-               #{}                   #{:in-any-order :gaps-ok}}))
+  (wrap-checker contains
+                {#{:in-order :no-gaps} #{}
+                 #{:in-order}          #{:gaps-ok}
+                 #{}                   #{:in-any-order :gaps-ok}}))
 
 (def produces-prefix
-  (mk-checker has-prefix))
+  (wrap-checker has-prefix))
 
 (def produces-suffix
-  (mk-checker has-suffix))
+  (wrap-checker has-suffix))
