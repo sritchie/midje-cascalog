@@ -93,6 +93,9 @@
 (def produces-suffix
   (wrap-checker has-suffix))
 
+(def has-tuples
+  (wrap-checker has))
+
 ;; ## Cascalog-Style Checkers
 
 (defmacro defmirror
