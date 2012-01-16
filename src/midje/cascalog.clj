@@ -60,16 +60,17 @@
   ([checker-fn opt-map valid-set]
      {:pre [(every? set? (keys opt-map))]}
      (let [valid-opts (apply union valid-set (keys opt-map))]
-       (fn [& forms]
-         (let [[forms opts] (split-forms forms)
-               [ll opts]    (pop-log-level opts)
-               opt-set      (mk-opt-set opts)
-               options      (opt-map opt-set [])
-               check-fn     (apply checker-fn (concat forms options))]
-           (assert (valid-options? valid-opts opt-set))
-           (chatty-checker
-            [query]
-            (check-fn (execute query :log-level ll))))))))
+       (-> (fn [& forms]
+             (let [[forms opts] (split-forms forms)
+                   [ll opts]    (pop-log-level opts)
+                   opt-set      (mk-opt-set opts)
+                   options      (opt-map opt-set [])
+                   check-fn     (apply checker-fn (concat forms options))]
+               (assert (valid-options? valid-opts opt-set))
+               (chatty-checker
+                [query]
+                (check-fn (execute query :log-level ll)))))
+           (with-meta {:cascalog-checker true})))))
 
 ;; With our fun function-generating-function-generating functions
 ;; behind us, we can move on to the meaty definitions of our Cascalog
