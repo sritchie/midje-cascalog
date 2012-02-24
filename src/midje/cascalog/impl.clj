@@ -27,9 +27,9 @@
   "Accepts a sequence with an optional log level as its first argument
   and returns a 2-vector with the log level (or nil if it wasn't
   present) and the non-log-level elements of the sequence."
-  [[ll & more :as bindings]]
-  (if (contains? io/log-levels ll)
-    [ll more]
+  [bindings]
+  (if-let [ll (first (filter io/log-levels bindings))]
+    [ll (disj (set bindings) ll)]
     [nil bindings]))
 
 (defn execute

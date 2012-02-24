@@ -1,7 +1,9 @@
 (ns midje.cascalog-test
   (:use midje.sweet
         cascalog.api
-        midje.cascalog)
+        midje.cascalog
+        [midje.cascalog.impl :only [execute]]
+        [clojure.math.combinatorics :only [permutations]])
   (:require [cascalog.ops :as c]))
 
 ;; ## Testing Battery
@@ -145,17 +147,24 @@
     "`produce-suffix` mimics the `has-suffix` collection checker."
     query => (produces-suffix [[5 11]])))
 
+(defn- mk-query [src]
+  (<- [?a] (src ?a)))
+
 ;; This syntax makes it possible to wrap tests in an external
 ;; `against-background` form, like so:
 
 (against-background [(whoop :a) => [[1] [2] [3]]]
-  (letfn [(mk-query [src]
-            (<- [?a] (src ?a)))]
-    (fact
-      "the background above applies to each fact."
-      (mk-query (whoop :a)) => (produces [[1] [2] [3]])
+  (fact "the background above applies to each fact."
+    (mk-query (whoop :a)) => (produces [[1] [2] [3]])
 
-      "Internal calls to provide will override the background."
-      (mk-query (whoop :a)) => (produces [["STRING!"]])
-      (provided
-        (whoop :a) => [["STRING!"]]))))
+    "Internal calls to provide will override the background."
+    (mk-query (whoop :a)) => (produces [["STRING!"]])
+    (provided
+      (whoop :a) => [["STRING!"]])))
+
+(doseq [?options (permutations [:in-order :no-gaps :info ])]
+  (fact "log-level option is used when executing query - 
+         regardless of location in options order"
+    ((apply produces-some ..query.. ?options) ..query..) => true
+    (provided
+      (execute ..query.. :log-level :info) => ..query..))) 
